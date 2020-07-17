@@ -4,18 +4,37 @@ using System.Security.Cryptography;
 
 namespace EncryptedMemo.Funcs
 {
-    internal static class EncryptUtils
+    internal class EncryptUtils
     {
-        private static readonly int KeySize = 256;
-        private static readonly int BlockSize = 128;
-        private static string _nextKey;
-        private static byte[] _entropy = Convert.FromBase64String(Settings.Default.Entropy)
-            ?? new byte[] { 0x72, 0xa2, 0x12, 0x04 };
         private const string EnvKeyName = "MemoKey";
+        private readonly int KeySize = 256;
+        private readonly int BlockSize = 128;
+        private string _nextKey;
+        private byte[] _entropyBase= Convert.FromBase64String(Settings.Default.Entropy) ?? new byte[] { 0x72, 0xa2, 0x12, 0x04 };
+        private byte[] _entropy;
+        protected string _pass;
 
-        internal static bool CheckKey()
+        public EncryptUtils(string pass)
+        {
+            _pass = pass;
+            CreateEntropy();
+        }
+
+        private void CreateEntropy()
+        {
+            _entropy = new byte[] { _entropyBase[0], _entropyBase[1], _entropyBase[2], _entropyBase[3] };
+            var idx = 0;
+            foreach(var p in Encoding.UTF8.GetBytes(_pass))
+            {
+                if (idx == 3) idx = 0;
+                _entropy[idx++] += p;
+            }
+        }
+
+        internal bool CheckKey()
         {
             if (_entropy == null) return false;
+
             var encryptedKey = Environment.GetEnvironmentVariable(EnvKeyName, EnvironmentVariableTarget.User);
             if (string.IsNullOrEmpty(encryptedKey)) return false;
             try
@@ -29,21 +48,22 @@ namespace EncryptedMemo.Funcs
             }
             return true;
         }
-        internal static void UpdateKey()
+        internal void UpdateKey()
         {
             //dpapi用エントロピーの更新
             byte[] random = new byte[4];
             using (var rng = new RNGCryptoServiceProvider())
                 rng.GetBytes(random);
-            _entropy = random;
-            Settings.Default.Entropy = Convert.ToBase64String(random);
+            _entropyBase = random;
+            Settings.Default.Entropy = Convert.ToBase64String(_entropyBase);
             Settings.Default.Save();
+            CreateEntropy();
             //aesの鍵の更新
             _nextKey = DpapiEncrypt(System.Web.Security.Membership.GeneratePassword(32, 0));
             Environment.SetEnvironmentVariable(EnvKeyName, _nextKey, EnvironmentVariableTarget.User);
         }
 
-        internal static string AesEncrypt(string value)
+        internal string AesEncrypt(string value)
         {
             using (var aes = GetAesManaged())
             {
@@ -55,7 +75,7 @@ namespace EncryptedMemo.Funcs
             }
         }
 
-        internal static string AesDecrypt(string encryptedValue)
+        internal string AesDecrypt(string encryptedValue)
         {
             using (var aes = GetAesManaged())
             {
@@ -68,7 +88,7 @@ namespace EncryptedMemo.Funcs
             }
         }
 
-        private static AesManaged GetAesManaged()
+        private AesManaged GetAesManaged()
         {
             var aes = new AesManaged
             {
@@ -90,7 +110,7 @@ namespace EncryptedMemo.Funcs
             return aes;
         }
 
-        private static string DpapiEncrypt(string value)
+        private string DpapiEncrypt(string value)
         {
             //文字列をバイト型配列に変換
             byte[] userData = System.Text.Encoding.UTF8.GetBytes(value);
@@ -99,7 +119,7 @@ namespace EncryptedMemo.Funcs
             return System.Convert.ToBase64String(encryptedData);
         }
 
-        private static string DpapiDecrypt(string encryptedValue)
+        private string DpapiDecrypt(string encryptedValue)
         {
             //文字列を暗号化されたデータに戻す
             byte[] encryptedData = System.Convert.FromBase64String(encryptedValue);

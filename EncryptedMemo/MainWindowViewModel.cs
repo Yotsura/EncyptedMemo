@@ -24,11 +24,9 @@ namespace EncryptedMemo
 
         public MainWindowViewModel()
         {
-            Memo = new MemoRecord();
+            Memo = new MemoRecord("");
             try
             {
-                if (!Funcs.EncryptUtils.CheckKey())
-                    Funcs.EncryptUtils.UpdateKey();
                 Memo.OpenData();
             }
             catch
