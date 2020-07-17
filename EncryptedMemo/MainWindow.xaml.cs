@@ -22,16 +22,18 @@ namespace EncryptedMemo
     {
         public MainWindow()
         {
+            OpenSignWindow();
+
             InitializeComponent();
 
-            _mwvm = new MainWindowViewModel();
+            _mwvm = new MainWindowViewModel(_pass);
             this.DataContext = _mwvm;
 
             if (Settings.Default.MainWindowStat == null) return;
-            Top = Settings.Default.MainWindowStat.Top;
-            Left = Settings.Default.MainWindowStat.Left;
-            Width = Settings.Default.MainWindowStat.Width;
-            Height = Settings.Default.MainWindowStat.Height;
+            this.Top = Settings.Default.MainWindowStat.Top;
+            this.Left = Settings.Default.MainWindowStat.Left;
+            this.Width = Settings.Default.MainWindowStat.Width;
+            this.Height = Settings.Default.MainWindowStat.Height;
         }
 
         MainWindowViewModel _mwvm;
@@ -47,8 +49,27 @@ namespace EncryptedMemo
         }
         private void TaskWindow_Closed(object sender, EventArgs e)
         {
-            Settings.Default.MainWindowStat = new WindowStat { Height = Height, Width = Width, Left = Left, Top = Top };
+            Settings.Default.MainWindowStat = new WindowStat { Height = this.Height, Width = this.Width, Left = this.Left, Top = this.Top };
             Settings.Default.Save();
+        }
+
+        SignWindow _signwindow;
+        private string _pass;
+        private void OpenSignWindow()
+        {
+            _signwindow = new SignWindow();
+            _signwindow.Btn.Click += SignInvoke;
+            _signwindow.Closed += SettingWindow_Closed;
+            _signwindow.ShowDialog();
+        }
+        private void SettingWindow_Closed(object sender, EventArgs e)
+        {
+            _signwindow = null;
+        }
+        private void SignInvoke(object sender, RoutedEventArgs e)
+        {
+            _pass = _signwindow.Pass1.Password;
+            _signwindow.Close();
         }
     }
 }

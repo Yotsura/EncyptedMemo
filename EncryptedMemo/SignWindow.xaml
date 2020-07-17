@@ -1,0 +1,33 @@
+﻿<Window x:Class="EncryptedMemo.SignWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:EncryptedMemo"
+        mc:Ignorable="d"
+        Title="Sign" Height="150" Width="300" ResizeMode="NoResize">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="10"/>
+            <ColumnDefinition Width="100"/>
+            <ColumnDefinition Width="10"/>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="10"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="10"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="5"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="5"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="10"/>
+        </Grid.RowDefinitions>
+        <Label Grid.Column="1" Grid.Row="1" Content="パスワード"/>
+        <PasswordBox Grid.Column="3" Grid.Row="1" Name="Pass1"/>
+        <Label Grid.Column="1" Grid.Row="3" Content="確認用" Visibility="Collapsed"/>
+        <PasswordBox Grid.Column="3" Grid.Row="3" Name="Pass2" Visibility="Collapsed"/>
+        <Button Grid.Column="1" Grid.Row="5" Grid.ColumnSpan="3" Name="Btn" Content="Sign"/>
+
+    </Grid>
+</Window>

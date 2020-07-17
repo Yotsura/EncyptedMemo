@@ -10,8 +10,9 @@ namespace EncryptedMemo
 
         public MemoRecord(string pass)
         {
-            pass = "@2+あしいgasJ";
             encrypt = new EncryptUtils(pass);
+            if (!encrypt.CheckKey())
+                encrypt.UpdateKey();
         }
 
         public void SaveData()
@@ -22,16 +23,14 @@ namespace EncryptedMemo
 
         public void OpenData()
         {
-            if (!encrypt.CheckKey())
-                encrypt.UpdateKey();
-
             var encrypted = Settings.Default.Data;
             Txt = string.IsNullOrEmpty(encrypted) ? string.Empty : encrypt.AesDecrypt(encrypted);
         }
 
-        private void UpdatePass(string pass)
+        public void UpdatePass(string pass)
         {
-            encrypt = new EncryptUtils(pass);
+            encrypt.UpdatePass(pass);
+            SaveData();
         }
     }
 }

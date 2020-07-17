@@ -22,9 +22,11 @@ namespace EncryptedMemo
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        public MainWindowViewModel()
+        public MainWindowViewModel(string pass)
         {
-            Memo = new MemoRecord("");
+            //var pass1 = "ckscks3485";
+            //var pass2 = "kfadhsoufy8uh34おいあｄ@@sad";
+            Memo = new MemoRecord(pass);
             try
             {
                 Memo.OpenData();
@@ -33,6 +35,8 @@ namespace EncryptedMemo
             {
                 Memo.Txt = $"データの復号に失敗。データは破棄されました。";
             }
+
+            //Memo.UpdatePass(pass2);
         }
     }
 }
