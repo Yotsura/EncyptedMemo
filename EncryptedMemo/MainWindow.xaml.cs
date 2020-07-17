@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MahApps.Metro.Controls;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,7 +19,7 @@ namespace EncryptedMemo
     /// <summary>
     /// MainWindow.xaml の相互作用ロジック
     /// </summary>
-    public partial class MainWindow
+    public partial class MainWindow : MetroWindow
     {
         public MainWindow()
         {
@@ -59,6 +60,7 @@ namespace EncryptedMemo
         {
             _signwindow = new SignWindow();
             _signwindow.Btn.Click += SignInvoke;
+            _signwindow.Pass1.KeyDown += Pass1_KeyDown;
             _signwindow.Closed += SettingWindow_Closed;
             _signwindow.ShowDialog();
         }
@@ -70,6 +72,12 @@ namespace EncryptedMemo
         {
             _pass = _signwindow.Pass1.Password;
             _signwindow.Close();
+        }
+
+        private void Pass1_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key != Key.Enter) return;
+            SignInvoke(sender,e);
         }
     }
 }

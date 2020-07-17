@@ -1,11 +1,12 @@
-﻿<Window x:Class="EncryptedMemo.SignWindow"
+﻿<Controls:MetroWindow x:Class="EncryptedMemo.SignWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         xmlns:local="clr-namespace:EncryptedMemo"
         mc:Ignorable="d"
-        Title="Sign" Height="150" Width="300" ResizeMode="NoResize">
+        Title="Sign" Height="150" Width="300" Activated="ForcusTxt" ResizeMode="NoResize">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="10"/>
@@ -30,4 +31,4 @@
         <Button Grid.Column="1" Grid.Row="5" Grid.ColumnSpan="3" Name="Btn" Content="Sign"/>
 
     </Grid>
-</Window>
+</Controls:MetroWindow>
