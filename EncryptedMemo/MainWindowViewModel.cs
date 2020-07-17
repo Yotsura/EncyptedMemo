@@ -27,13 +27,13 @@ namespace EncryptedMemo
             Memo = new MemoRecord();
             try
             {
+                if (!Funcs.EncryptUtils.CheckKey())
+                    Funcs.EncryptUtils.UpdateKey();
                 Memo.OpenData();
             }
             catch
             {
-                //var errfile = Memo.Filepath.Replace("taskTxt.log", $"{DateTime.Now.ToString("yyyyMMddHHmmss")}taskTxt.log");
-                //System.IO.File.Copy(Memo.Filepath, errfile);
-                Memo.Txt = $"データファイルの展開に失敗。";
+                Memo.Txt = $"データの復号に失敗。データは破棄されました。";
             }
         }
     }
